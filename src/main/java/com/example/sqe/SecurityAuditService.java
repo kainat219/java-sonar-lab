@@ -29,7 +29,7 @@ public class SecurityAuditService {
         }
         try {
             // SONAR ISSUE (java:S4790): Insecure hashing algorithm MD5
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte b : hashBytes) {
@@ -58,7 +58,7 @@ public class SecurityAuditService {
     public boolean validateToken(String token) {
         if (token == null || token.trim().isEmpty()) {
             // SONAR ISSUE (java:S3984): Exception created but not thrown
-            new IllegalArgumentException("User token cannot be null or empty.");
+           // new IllegalArgumentException("User token cannot be null or empty.");
             return false;
         }
         return token.startsWith("TOK_");
@@ -86,7 +86,7 @@ public class SecurityAuditService {
     public String evaluateAccessLevel(String role) {
         // SONAR ISSUE (java:S3923): Both if and else branches have identical implementations
         if ("ADMIN".equalsIgnoreCase(role)) {
-            return "ACCESS_LEVEL_STANDARD";
+            return "ACCESS_LEVEL_PRIVILEGED";
         } else {
             return "ACCESS_LEVEL_STANDARD";
         }
@@ -114,10 +114,9 @@ public class SecurityAuditService {
         // SONAR ISSUE (java:S3516): Method always returns the same value across all branches
         if (statusCode >= 200 && statusCode < 300) {
             return true;
-        } else if (statusCode == 404) {
-            return true;
+        
         } else {
-            return true;
+            return false;
         }
     }
 }
